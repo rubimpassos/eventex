@@ -19,7 +19,7 @@ git clone https://github.com/rubimpassos/eventex eventex
 cd eventex
 python -m venv .eventex
 source .eventex/Scripts/activate.bat
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 cp contrib/env-sample .env
 python manage.py test
 ```
