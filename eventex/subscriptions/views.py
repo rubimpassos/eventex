@@ -1,18 +1,22 @@
 from django.conf import settings
 from django.core import mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render, resolve_url as r
 from django.template.loader import render_to_string
 
 from eventex.subscriptions.forms import SubscriptionForm
 from eventex.subscriptions.models import Subscription
 
 
-def subscribe(request):
+def new(request):
     if request.method == 'POST':
         return create(request)
     else:
-        return new(request)
+        return empty_form(request)
+
+
+def empty_form(request):
+    return render(request, 'subscriptions/subscription_form.html', {'form': SubscriptionForm()})
 
 
 def create(request):
@@ -31,11 +35,7 @@ def create(request):
                'subscriptions/subscription_email.txt',
                {'subscription': subscription})
 
-    return HttpResponseRedirect('/inscricao/obrigado/')
-
-
-def new(request):
-    return render(request, 'subscriptions/subscription_form.html', {'form': SubscriptionForm()})
+    return HttpResponseRedirect(r('subscriptions:thank-you'))
 
 
 def detail(request, pk):
@@ -45,7 +45,7 @@ def detail(request, pk):
 
 def thank_you(request):
     if 'subscription_pk' not in request.session:
-        return HttpResponseRedirect('/inscricao/')
+        return HttpResponseRedirect(r('subscriptions:new'))
 
     subscription = get_object_or_404(Subscription, pk=request.session['subscription_pk'])
     del request.session['subscription_pk']

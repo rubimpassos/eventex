@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.shortcuts import resolve_url as r
 
 from eventex.subscriptions.models import Subscription
 
@@ -14,7 +15,7 @@ class ThankYouPageGet(TestCase):
         session = self.client.session
         session['subscription_pk'] = self.obj.pk
         session.save()
-        self.response = self.client.get('/inscricao/obrigado/')
+        self.response = self.client.get(r('subscriptions:thank-you'))
 
     def test_get(self):
         self.assertEqual(200, self.response.status_code)
@@ -39,10 +40,10 @@ class ThankYouPageGet(TestCase):
 
 class ThankYouPageSessionNotFound(TestCase):
     def setUp(self):
-        self.response = self.client.get('/inscricao/obrigado/')
+        self.response = self.client.get(r('subscriptions:thank-you'))
 
     def test_session_not_found_redirect(self):
-        self.assertRedirects(self.response, '/inscricao/')
+        self.assertRedirects(self.response, r('subscriptions:new'))
 
 
 class ThankYouPageSubscriptionNotFound(TestCase):
@@ -50,7 +51,7 @@ class ThankYouPageSubscriptionNotFound(TestCase):
         session = self.client.session
         session['subscription_pk'] = 0
         session.save()
-        self.response = self.client.get('/inscricao/obrigado/')
+        self.response = self.client.get(r('subscriptions:thank-you'))
 
     def test_subscription_not_found(self):
         self.assertEqual(404, self.response.status_code)
