@@ -45,13 +45,17 @@ class SubscribePostValid(TestCase):
 
     def test_post(self):
         """Valid POST should redirect to /inscricao/"""
-        self.assertRedirects(self.response, '/inscricao/1/')
+        self.assertRedirects(self.response, '/inscricao/obrigado/')
 
     def test_send_subscribe_email(self):
         self.assertEqual(1, len(mail.outbox))
 
     def test_save_subscription(self):
         self.assertTrue(Subscription.objects.exists())
+
+    def test_session_subscription_pk(self):
+        """Must save subscription pk in session after save"""
+        self.assertIn('subscription_pk', self.client.session)
 
 
 class SubscribePostInvalid(TestCase):

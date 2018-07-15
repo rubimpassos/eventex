@@ -1,18 +1,18 @@
 from datetime import datetime
 
 from django.test import TestCase
+
 from eventex.subscriptions.models import Subscription
 
 
 class SubscriptionModelTest(TestCase):
     def setUp(self):
-        self.obj = Subscription(
+        self.obj = Subscription.objects.create(
             name='Nome Fictício',
             cpf='12345678901',
             email='nome@email.com.br',
             phone='21-987654321'
         )
-        self.obj.save()
 
     def test_create(self):
         self.assertTrue(Subscription.objects.exists())
